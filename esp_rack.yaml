@@ -1,0 +1,236 @@
+esphome:
+  name: esp-cellier-rackinfo-fan
+
+esp8266:
+  board: esp01
+
+# Enable logging
+logger:
+  baud_rate: 0   # disable logging via UART, help to avoid numerous crash with ESP_LOGD
+  #level: INFO   # INFO for less log, put DEBUG to view all in the logs
+
+# Enable Home Assistant API
+api:
+
+ota:
+  password: "a5a6b56a231478e14250698c6f080c09"
+
+wifi:
+  networks:
+  - ssid: !secret wifi_orangebox_ssid
+    password: !secret wifi_orangebox_password
+  - ssid: !secret wifi_maison_ssid
+    password: !secret wifi_maison_password
+  
+  power_save_mode: none
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Esp-Cellier-RackInfo-Fan-Hotspot"
+    password: !secret wifi_esp_ap_password
+
+captive_portal:
+
+#web_server:
+#  port: 80
+#  version: 1
+
+time:
+  - platform: homeassistant
+    timezone: "Europe/Paris"
+    id: ha_time
+  
+  - platform: sntp
+    on_time:
+    # toutes les 45 minutes action(s) : template impossible ici pour les minutes ?
+      - seconds: 0
+        minutes: /45
+        then:
+          - if:
+              condition:
+               and:
+                 - switch.is_off: EspCellierRackInfoFanRelay
+                 - switch.is_off: EspCellierRackInfoFanForceFan
+                 - lambda: |-
+                    return id(EspCellierRackInfoFanTemperature).state >= id(EspCellierRackInfoSeuilTemperature).state;
+#                   return id(temp_rackinfo).state >= id(EspCellierRackInfoSeuilTemperature).state;
+              then:
+                - switch.turn_on: EspCellierRackInfoFanRelay
+#                - delay: !lambda "return round(id(EspCellierRackInfoDureeVentilation).state)*1000*60;"
+#                - delay: !lambda return (to_string(round(id(EspCellierRackInfoDureeVentilation).raw_state)) +"min").c_str();
+              else:
+                - if:
+                    condition:
+                      and:
+                        - switch.is_on: EspCellierRackInfoFanRelay
+                        - switch.is_off: EspCellierRackInfoFanForceFan
+                        - lambda: |-
+                           return id(EspCellierRackInfoFanTemperature).state < id(EspCellierRackInfoSeuilTemperature).state;
+#                            return id(temp_rackinfo).state < id(EspCellierRackInfoSeuilTemperature).state;
+                    then:
+                      - switch.turn_off: EspCellierRackInfoFanRelay
+                    else:
+                      - if:
+                          condition:
+                            and:
+                              - switch.is_off: EspCellierRackInfoFanRelay
+                              - switch.is_off: EspCellierRackInfoFanForceFan
+                              - lambda: |-
+                                 return id(EspCellierRackInfoFanTemperature).state < id(EspCellierRackInfoSeuilTemperature).state;
+#                                  return id(temp_rackinfo).state < id(EspCellierRackInfoSeuilTemperature).state;
+                          then:
+                           - delay: 1s
+                          else:
+                            - if:
+                                condition:
+                                 and:
+                                   - switch.is_off: EspCellierRackInfoFanRelay
+                                   - switch.is_off: EspCellierRackInfoFanForceFan
+                                then:
+                                  - switch.turn_on: EspCellierRackInfoFanRelay
+
+binary_sensor:
+
+  - platform: status
+    name: "Esp Cellier RackInfo Fan Status"
+    
+    
+text_sensor:
+#  - platform: template
+#    name: "Cellier RackInfo Fan Uptime"
+#    id: uptime_human
+#    icon: mdi:clock-start
+    
+  - platform: wifi_info
+    ip_address:
+      name: "Esp Cellier RackInfo Fan Local IP"
+    ssid:
+     name: "Esp Cellier RackInfo Fan SSID"
+
+button:
+  - platform: restart
+    name: "Esp Cellier RackInfo Fan Restart"
+  - platform: shutdown
+    name: "Esp Cellier RackInfo Fan Shutdown"
+  - platform: safe_mode
+    name: "Esp Cellier RackInfo Fan Safe Mode"
+ 
+switch:
+  - platform: gpio
+    pin:
+      number: 0
+      inverted: true
+    name: "Esp Cellier RackInfo Fan Relay"
+    id: EspCellierRackInfoFanRelay
+    icon: "mdi:fan"
+    restore_mode: "ALWAYS_ON"
+    
+  - platform: template
+    name: Esp Cellier RackInfo Fan Force Fan
+    id: EspCellierRackInfoFanForceFan
+    icon: "mdi:fan-alert"
+    restore_state: false
+    optimistic: true
+    turn_on_action:
+      then:
+        - if:
+            condition:
+              switch.is_off: EspCellierRackInfoFanForceFan
+            then:
+                - switch.turn_on: EspCellierRackInfoFanRelay
+    turn_off_action:
+      then:
+        - if:
+            condition:
+              switch.is_on: EspCellierRackInfoFanForceFan
+            then:
+                - switch.turn_off: EspCellierRackInfoFanRelay
+    
+number:
+
+  - platform: template
+    name: "Esp Cellier RackInfo Seuil Temperature"
+    id: EspCellierRackInfoSeuilTemperature
+    optimistic: true
+    unit_of_measurement: '°C'
+    icon: mdi:thermometer-alert
+    min_value: 15.0
+    max_value: 35.0
+    step: 1
+    initial_value: 30.0
+    restore_value: true
+    mode: 'slider'
+    
+#  - platform: template
+#    name: "Esp Cellier RackInfo Duree Ventilation"
+#    id: EspCellierRackInfoDureeVentilation
+#    optimistic: true
+#    unit_of_measurement: 'minutes'
+#    icon: mdi:timer-sand
+#    min_value: 5
+#    max_value: 300
+#    step: 5
+#    initial_value: 180
+#    restore_value: true
+#    mode: 'slider'
+    
+sensor:
+
+  - platform: wifi_signal
+    name: "Esp Cellier RackInfo Fan WiFi Signal"
+    update_interval: 900s
+    
+  - platform: dht
+    model: dht22
+    pin: 2
+    temperature:
+      name: "Esp Cellier RackInfo Fan Temperature"
+      id: "EspCellierRackInfoFanTemperature"
+      filters:
+        - offset: 0
+      on_value_range:
+        - above: !lambda return id(EspCellierRackInfoSeuilTemperature).state;
+          then:
+            - if:
+                condition:
+                    switch.is_off: EspCellierRackInfoFanForceFan
+                then:
+                    - switch.turn_on: EspCellierRackInfoFanRelay
+    humidity:
+      name: "Esp Cellier RackInfo Fan Humidity"
+      id: "EspCellierRackInfoFanHumidity"
+    update_interval: 240s
+
+#  - platform: homeassistant
+#    id: temp_rackinfo
+#    entity_id: sensor.temperature_49
+#    on_value_range:
+#      - above: !lambda return id(EspCellierRackInfoSeuilTemperature).state;
+#        then:
+#          - if:
+#              condition:
+#                  switch.is_off: EspCellierRackInfoFanForceFan
+#              then:
+#                  - switch.turn_on: EspCellierRackInfoFanRelay
+    
+#  - platform: uptime
+#    name: "Esp Cellier RackInfo Fan Uptime"
+#    id: uptime_sensor
+#    update_interval: 900s
+#    on_raw_value:
+#      then:
+#        - text_sensor.template.publish:
+#            id: uptime_human
+#            state: !lambda |-
+#              int seconds = round(id(uptime_sensor).raw_state);
+#              int days = seconds / (24 * 3600);
+#              seconds = seconds % (24 * 3600);
+#              int hours = seconds / 3600;
+#              seconds = seconds % 3600;
+#              int minutes = seconds /  60;
+#              return (
+#                (days ? to_string(days) + "d " : "") +
+#                (hours ? to_string(hours) + "h " : "") +
+#                (minutes ? to_string(minutes) + "m " : "")
+#              ).c_str();
+    

@@ -1,0 +1,71 @@
+type: vertical-stack
+cards:
+  - type: markdown
+    content: <center><b>Baie Informatique</b></center>
+  - type: entities
+    entities:
+      - entity: switch.esp_cellier_rackinfo_fan_relay
+        name: Ventilateur
+        secondary_info: last-updated
+      - entity: switch.esp_cellier_rackinfo_fan_force_fan
+        name: Forcer Ventilation
+      - entity: number.esp_cellier_rackinfo_seuil_temperature
+        name: Seuil Ventilation
+      - entity: sensor.esp_cellier_rackinfo_fan_temperature
+        name: Température Rack
+  - type: horizontal-stack
+    cards:
+      - type: custom:mini-graph-card
+        icon: mdi:chip
+        entities:
+          - entity: sensor.rpi4_cpu_temperature
+            name: Cpu
+        name: Cpu Rpi-4 Haos
+        hours_to_show: 168
+        points_per_hour: 1
+        update_interval: 30
+        line_width: 6
+        smoothing: true
+        hour24: true
+        decimals: null
+        show:
+          extrema: true
+          fill: true
+          icon: true
+          labels: true
+          name: true
+          state: true
+        color_thresholds:
+          - value: 30
+            color: '#009FC1'
+          - value: 60
+            color: '#D0AB00'
+          - value: 90
+            color: '#C10042'
+      - type: custom:mini-graph-card
+        icon: mdi:lan
+        entities:
+          - entity: sensor.temperature_49
+            name: Rack Info
+        name: Rack Info
+        hours_to_show: 168
+        points_per_hour: 1
+        update_interval: 30
+        line_width: 6
+        smoothing: true
+        hour24: true
+        decimals: null
+        show:
+          extrema: true
+          fill: true
+          icon: true
+          labels: true
+          name: true
+          state: true
+        color_thresholds:
+          - value: 10
+            color: '#009FC1'
+          - value: 25
+            color: '#D0AB00'
+          - value: 45
+            color: '#C10042'
