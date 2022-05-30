@@ -65,7 +65,7 @@ Il faut donc le flasher a chaque modification du yaml avec esphome flasher.
 
 Rien de très spécial ici, 1 carte d'entités  + 2 mini graph
 
-![links](https://github.com/NicoDupont/esp_cellier_rack/blob/master/img/dashboardha.png?raw=true)
+![links](https://github.com/NicoDupont/esp_ventilation_rack_info/blob/main/img/dashboardha.png?raw=true)
     
 
 
