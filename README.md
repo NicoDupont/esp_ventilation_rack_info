@@ -42,11 +42,11 @@ J'ai du utiliser un esp01.
 Il y a un problème avec l'esp01. Sa mémoire est trop petite pour flasher en ota.  
 Il faut donc le flasher a chaque modification du yaml avec esphome flasher.  
 
-![links](https://github.com/NicoDupont/esp_cellier_rack/blob/master/doc/shemapaint.png?raw=true)
+![links](https://github.com/NicoDupont/esp_ventilation_rack_info/blob/main/img/shema.png?raw=true)
 
 ### Montage :
 
-![links](https://github.com/NicoDupont/esp_cellier_rack/blob/master/img/botier.jpg?raw=true)
+![links](https://github.com/NicoDupont/esp_ventilation_rack_info/blob/main/img/boitier.png?raw=true)
 
 
 ### HomeAssistant :
