@@ -23,7 +23,7 @@ On peut forcer la ventilation et régler le seuil de temperature.
 - 1x carte relai shield pour esp01-s (prendre une v4)
 - 1x alimentation 12v dc suffisante pour alimenter le ou les ventilateurs
 - 1x convertisseur 12v dc=>5v dc
-- 1x convertisseur 5v dc=>3.3v dc 
+- 1x convertisseur 5v dc=>3.3v dc (à revoir pas besoin normalement)
 - 1x DHT22
 - 1x resistance 4.7K ohm
 - 1x boitier
@@ -33,14 +33,12 @@ On peut forcer la ventilation et régler le seuil de temperature.
 ### Cablage :
 
 Le data du dht22 doit etre directement soudé au GPIO2 sur la carte relai.  
-Avec une resistance de 4.7kohm entre data et vcc (+3.3v).   
+Avec une resistance de 4.7kohm entre data et vcc (+3.3v).     
 
-Le convertisseur 5v => 3.3v n'est pas forcement necessaire.    
-
-La sonde dht22 ne fonctionne pas correctement avec un esp01s sur le gpio2 (led bleu sur ce gpio).
+La sonde dht22 ne fonctionne pas correctement avec un esp01s sur le gpio2 (led bleu sur ce gpio) => à revoir.
 J'ai du utiliser un esp01.   
-Il y a un problème avec l'esp01. Sa mémoire est trop petite pour flasher en ota.  
-Il faut donc le flasher a chaque modification du yaml avec esphome flasher.  
+Il y a un problème avec l'esp01. Sa mémoire est apparemment trop petite pour flasher en ota depuis esphome.  
+Il faut donc le flasher a chaque modification du yaml avec esphome flasher ou via le navigateur.  
 
 ![links](https://github.com/NicoDupont/esp_ventilation_rack_info/blob/main/img/shema.png?raw=true)
 
