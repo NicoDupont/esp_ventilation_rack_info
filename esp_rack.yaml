@@ -1,13 +1,14 @@
 esphome:
   name: esp-cellier-rackinfo-fan
-
-esp8266:
+  platform: ESP8266
   board: esp01
+  comment: esp8266 esp01 gestion ventilateurs du rack info selon la temperature 
 
 # Enable logging
 logger:
   baud_rate: 0   # disable logging via UART, help to avoid numerous crash with ESP_LOGD
-  #level: INFO   # INFO for less log, put DEBUG to view all in the logs
+  level: INFO   # INFO for less log, put DEBUG to view all the linky's "étiquettes" received  in the logs
+  esp8266_store_log_strings_in_flash: False     #  :doc:`recommanded for ESP8266 </components/sensor/custom>`
 
 # Enable Home Assistant API
 api:
@@ -21,6 +22,8 @@ wifi:
     password: !secret wifi_orangebox_password
   - ssid: !secret wifi_maison_ssid
     password: !secret wifi_maison_password
+  - ssid: !secret wifi_maison_2_ssid
+    password: !secret wifi_maison_2_password
   
   power_save_mode: none
 

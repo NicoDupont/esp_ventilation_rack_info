@@ -49,16 +49,6 @@ Il faut donc le flasher a chaque modification du yaml avec esphome flasher ou vi
 
 ### HomeAssistant :
 
-#### Esphome :
-
-1. créer un nouveau noeud dans esphome.  
-2. le nommer 'esp_rack' ou comme vous le souhaitez... 
-3. copier le code du fichier esp_rack.yaml  
-4. Adapter le code (wifi, non des entités, etc...)
-6. vérifier le code  
-7. télécharger le binaire  
-8. flasher votre esp avec esphome flasher  
-
 #### DashBoard :
 
 Rien de très spécial ici, 1 carte d'entités  + 2 mini graph
