@@ -9,6 +9,8 @@ Ce petit montage est utilisé pour ventiler mon rack informatique si la tempéra
 Tout est configurable depuis l'interface de Home Assistant mais la logique se fait directement dans l'esp8266.   
 Par defaut, le ventilateur est declenché.
 
+V2 : remplacement du dht22 par un sht31d (fonctionne bien mieux avec l'esp01s)
+
 ### Fonctionnement :
 
 On détermine un seuil X en température et on ventile si ce seuil est dépassé.   
@@ -19,32 +21,31 @@ On peut forcer la ventilation et régler le seuil de temperature.
 
 - 1 ou 2 ventilateurs 12v/12cm de pc 3pins sans pwm (alimenté en 12v via le relai)
 - 1x ftdi (1er flash)
-- 1x esp8266 esp01 (pas un esp01s)
+- 1x esp8266 esp01s
 - 1x carte relai shield pour esp01-s (prendre une v4)
 - 1x alimentation 12v dc suffisante pour alimenter le ou les ventilateurs
-- 1x convertisseur 12v dc=>5v dc
-- 1x convertisseur 5v dc=>3.3v dc (à revoir pas besoin normalement)
-- 1x DHT22
-- 1x resistance 4.7K ohm
+- 1x convertisseur 12v dc=>5v dc (lm2596 step down)
+- 1x SHT31D (i2c pin 1 et 3)
 - 1x boitier
 - 1x interrupteur
 - 1x fusible 20x5 1A + porte fusible
 
 ### Cablage :
 
-Le data du dht22 doit etre directement soudé au GPIO2 sur la carte relai.  
-Avec une resistance de 4.7kohm entre data et vcc (+3.3v).     
+v1 : dht22
+Gros probleme avec le dht22 et l'esp01s... fonctionne bien sur un esp01
+mais l'esp01 a une memoire trop petit pour les flash ota.
 
-La sonde dht22 ne fonctionne pas correctement avec un esp01s sur le gpio2 (led bleu sur ce gpio) => à revoir.
-J'ai du utiliser un esp01.   
-Il y a un problème avec l'esp01. Sa mémoire est apparemment trop petite pour flasher en ota depuis esphome.  
-Il faut donc le flasher a chaque modification du yaml avec esphome flasher ou via le navigateur.  
+v2 : remplacement du dht22 par un sht31d et de l'esp01 par un esp01s
+
+i2c sur les gpio 1 et 3
+le relais sur le gpio 0
 
 ![links](https://github.com/NicoDupont/esp_ventilation_rack_info/blob/main/img/shema.png?raw=true)
 
 ### Montage :
 
-![links](https://github.com/NicoDupont/esp_ventilation_rack_info/blob/main/img/boitier.png?raw=true)
+![links](https://github.com/NicoDupont/esp_ventilation_rack_info/blob/main/img/boitier.jpg?raw=true)
 
 
 ### HomeAssistant :
